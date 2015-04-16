@@ -4,6 +4,9 @@ android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
 
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+    }
     defaultConfig {
         applicationId "com.example.sean.dashboardfeed"
         minSdkVersion 19
