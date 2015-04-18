@@ -27,9 +27,9 @@ public class MainActivity extends ActionBarActivity {
                 "WmswfwYHEjEIMmH1xjVzLT3fWsf16IfR4BTwTlLApxOLgog6Ja");
 
 
-        List<Post> dashboard_posts = client.userDashboard();
+        /*List<Post> dashboard_posts = client.userDashboard();
         for(Post p: dashboard_posts)
-            Log.w("posts",p.getBlogName());
+            Log.w("posts",p.getBlogName());*/
     }
 
 
