@@ -1,5 +1,8 @@
 package com.example.sean.dashboardfeed;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -25,16 +28,29 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         client.setToken(oauth_token,oauth_secret);
+        isNetworkConnected();
         new DashboardPostsTask().execute(client);
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        if (ni == null) {
+            // There are no active networks.
+            Log.i("Connection","false");
+            return false;
+        } else
+            Log.i("Connection","true");
+            return true;
     }
 
     private class DashboardPostsTask extends AsyncTask<JumblrClient,Void,Void> {
         @Override
         protected Void doInBackground(JumblrClient... params) {
-            //List<Post> dashboard_posts = client.userDashboard();
-            String  user = client.user().toString();
+            List<Post> dashboard_posts = client.userDashboard();
+            for(Post p: dashboard_posts)
+                Log.i("Posts", p.toString());
             return null;
         }
     }
