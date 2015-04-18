@@ -1,5 +1,6 @@
 package com.example.sean.dashboardfeed;
 
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,22 +15,28 @@ import com.tumblr.jumblr.types.User;
 
 
 public class MainActivity extends ActionBarActivity {
+    final String consumer_key = "yWa0yVJL08Nkg5iiFhASdSbIDcM8rGv58GUa45J2GsZoy1NcrP";
+    final String consumer_secret = "k6sFufMPQQNfM3TvCeIsE15sc6cW2t9EKvrl80idw87oza5tQC";
+    final String oauth_token = "P71hOXuzOc2wRNIRaL2k6zjLB2Agd9BoTE3RxqqacXN8HtqE2G";
+    final String oauth_secret = "WmswfwYHEjEIMmH1xjVzLT3fWsf16IfR4BTwTlLApxOLgog6Ja";
+    final JumblrClient client = new JumblrClient(consumer_key,consumer_secret);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Initalizes the JumblrClient using the consumer key, consumer secret, oauth token, and oauth token secret
-        JumblrClient client = new JumblrClient("yWa0yVJL08Nkg5iiFhASdSbIDcM8rGv58GUa45J2GsZoy1NcrP",
-                                "k6sFufMPQQNfM3TvCeIsE15sc6cW2t9EKvrl80idw87oza5tQC");
-        client.setToken("P71hOXuzOc2wRNIRaL2k6zjLB2Agd9BoTE3RxqqacXN8HtqE2G",
-                "WmswfwYHEjEIMmH1xjVzLT3fWsf16IfR4BTwTlLApxOLgog6Ja");
+        client.setToken(oauth_token,oauth_secret);
+        new DashboardPostsTask().execute(client);
+    }
 
-
-        /*List<Post> dashboard_posts = client.userDashboard();
-        for(Post p: dashboard_posts)
-            Log.w("posts",p.getBlogName());*/
+    private class DashboardPostsTask extends AsyncTask<JumblrClient,Void,Void> {
+        @Override
+        protected Void doInBackground(JumblrClient... params) {
+            //List<Post> dashboard_posts = client.userDashboard();
+            String  user = client.user().toString();
+            return null;
+        }
     }
 
 
