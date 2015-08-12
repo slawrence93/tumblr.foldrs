@@ -1,27 +1,25 @@
 package com.example.sean.dashboardfeed;
 
 import android.content.Context;
-import android.database.DataSetObserver;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import java.util.*;
 
 import com.tumblr.jumblr.JumblrClient;
-import com.tumblr.jumblr.types.Blog;
 import com.tumblr.jumblr.types.Post;
-import com.tumblr.jumblr.types.User;
+
 
 
 public class MainActivity extends ActionBarActivity {
@@ -38,6 +36,23 @@ public class MainActivity extends ActionBarActivity {
         client.setToken(oauth_token,oauth_secret);
         isNetworkConnected();
         new DashboardPostsTask().execute(client);
+
+        final SwipeRefreshLayout swipe_view = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
+        swipe_view.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.MAGENTA);
+        swipe_view.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            public void onRefresh() {
+                //swipe_view.setRefreshing(true);
+                new DashboardPostsTask().execute(client);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipe_view.setRefreshing(false);
+                    }
+                }, 2000);
+            }
+        });
     }
 
     private boolean isNetworkConnected() {
@@ -65,20 +80,22 @@ public class MainActivity extends ActionBarActivity {
             final String[] name_array = new String[blog_names.size()];
             blog_names.toArray(name_array);
 
+            //moves the portion of background task that updates UI onto main thread
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     populateListView(name_array);
                 }
             });
-           // populateListView(name_array);
+
             return null;
         }
     }
 
+    //populates ListView with values (blog names)
     private void populateListView(String[] names) {
         //Build adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this, //context for the activity
                 R.layout.blog_names, //layout to use(create)
                 names); //items to be displayed
